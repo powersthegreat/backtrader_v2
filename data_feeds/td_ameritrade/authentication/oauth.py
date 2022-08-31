@@ -1,6 +1,6 @@
 from tda import auth, client
 import json
-from authentication import config
+from td_ameritrade.authentication import config
 
 def get_client():
     try:
