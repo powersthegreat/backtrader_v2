@@ -57,53 +57,59 @@ class Historical_Pricing:
         today_datetime = datetime.date.today()
         if self.period == 1:
             #every minute
-            max_period = 47 #really 48 but we can ramp up later
+            max_period = 17 #really 48 but we can ramp up later
             max_date = today_datetime - timedelta(days=max_period)
             self.set_end_date(str(max_date))
         elif self.period == 2:
             #every 5 minutes
-            max_period = 195 #9 months worth of work days
+            max_period = 116 #9 months worth of work days
             max_date = today_datetime - timedelta(days=max_period)
             self.set_end_date(str(max_date))
         elif self.period == 3:
             #every 10 minutes
-            max_period = 195 #9 months worth of work days
+            max_period = 118 #9 months worth of work days
             max_date = today_datetime - timedelta(days=max_period)
             self.set_end_date(str(max_date))
         elif self.period == 4:
             #every 15 mintues
-            max_period = 195 #9 months worth of work days
+            max_period = 118 #9 months worth of work days
             max_date = today_datetime - timedelta(days=max_period)
             self.set_end_date(str(max_date))
         elif self.period == 5:
             #every 30 minutes
-            max_period = 195 #9 months worth of work days
+            max_period = 119 #9 months worth of work days
             max_date = today_datetime - timedelta(days=max_period)
             self.set_end_date(str(max_date))
         elif self.period == 6:
             #every day
-            max_period = 9645 #back to 1985
+            max_period = 6894 #back to 1985
             max_date = today_datetime - timedelta(days=max_period)
             self.set_end_date(str(max_date))
         elif self.period == 7:
             # every week
-            max_period = 9645 #back to 1985
+            max_period = 10009 #back to 1985
             max_date = today_datetime - timedelta(days=max_period)
             self.set_end_date(str(max_date))
         else:
             raise IndexError("Period mode input not allowed.")
         return self.end_date
-            
-    def get_every_minute(self):
+
+    def check_start_date(self):
         if self.start_date == None:
             start = self.set_start_as_today()
+        else:
+            return
+            
+    def check_end_date(self):
         if self.end_date == None:
             end = self.set_end_date_as_max()
-        print(self.start_date)
-        print(self.end_date)
-            
+        else:
+            return
 
-
+    def get_every_minute(self):
+        self.check_start_date()
+        self.check_end_date()
+        
 
 for i in range(1, 8):
     data_test = Historical_Pricing("AAPL", i)

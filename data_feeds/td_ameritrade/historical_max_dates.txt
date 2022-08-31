@@ -1,0 +1,20 @@
+client.get_price_history_every_minute()
+-returns maximum of 26263 values which is equivalent to 18 days
+
+client.get_price_history_every_five_minutes()
+-returns maximum of 33794 values which is equivalent to 117 days
+
+client.get_price_history_every_ten_minutes()
+-returns maximum of 17138 values which is equivalent to 119 days
+
+client.get_price_history_every_fifteen_minutes()
+-returns maximum of 11458 values which is equivalent to 119 days
+
+client.get_price_history_every_thirty_minutes()
+-returns maximum of 5739 values which is equivalent to 119 days
+
+client.get_price_history_every_day()
+-returns maximum of 6895 values which is equivalent to 6895 days
+
+client.get_price_history_every_week()
+-returns maximum of 1430 values which is equivalent to 10010 days
