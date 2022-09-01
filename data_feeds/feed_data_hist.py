@@ -1,13 +1,16 @@
 from td_ameritrade import get_data_tda_hist as tda_hist
 import csv
 import pandas
+import sys    
+print("In module products sys.path[0], __package__ ==", sys.path[0], __package__)
+
 class Feed_Historical_Pricing:
     def __init__(self, source):
         self.csv_length = None
         self.historical_pricing_df = None
         self.source = source
 
-    def create_csv(self, period):
+    def create_csv(self, period = 6):
         if self.source == "tda":
             # input syntax:
             #     - 1, minute frequency period
@@ -51,9 +54,9 @@ class Feed_Historical_Pricing:
         return self.csv_length
     
 
-test_1 = Feed_Historical_Pricing("tda")
-test_1.create_csv(6)
-test_1.read_csv()
-test_1.get_increment_df(0)
-df_length = test_1.get_length()
-test_1.get_increment_df(df_length-1)
+# test_1 = Feed_Historical_Pricing("tda")
+# test_1.create_csv(6)
+# test_1.read_csv()
+# test_1.get_increment_df(0)
+# df_length = test_1.get_length()
+# test_1.get_increment_df(df_length-1)
