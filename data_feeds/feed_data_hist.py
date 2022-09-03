@@ -1,14 +1,16 @@
-from td_ameritrade import get_data_tda_hist as tda_hist
+import sys
+sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\data_feeds\td_ameritrade')
+import get_data_tda_hist as tda_hist
 import csv
-import pandas
-import sys    
-print("In module products sys.path[0], __package__ ==", sys.path[0], __package__)
+import pandas   
+
 
 class Feed_Historical_Pricing:
     def __init__(self, source):
         self.csv_length = None
         self.historical_pricing_df = None
         self.source = source
+        
 
     def create_csv(self, period = 6):
         if self.source == "tda":
@@ -45,6 +47,7 @@ class Feed_Historical_Pricing:
         #and returns it for use of operate
         if self.source == "tda":
             current_row_dict = eval(self.historical_pricing_df.loc[index][1])
+            return current_row_dict
         elif self.source == "yahoo":
             pass
         else:
