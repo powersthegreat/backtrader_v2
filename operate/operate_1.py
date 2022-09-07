@@ -21,7 +21,7 @@ class Operate_Historical():
         self.loaded_data_obj = None
 
     def load_data(self):
-        loaded_data = feed_data_hist.Feed_Historical_Pricing(self.ticker, self.source, self.period)
+        loaded_data = feed_data_hist.Feed_Historical_Pricing(self.ticker, self.source, self.period, self.start_date, self.end_date)
         loaded_data.create_csv()
         loaded_data.read_csv()
         self.csv_length = loaded_data.csv_length
@@ -49,6 +49,22 @@ class Operate_Historical():
 
 
 
-test_1 = Operate_Historical(ticker="WMT", source="tda", period=6)
+
+# input syntax:
+# - when initializing a Operate_Historical object pass in the ticker, data feed source,
+#   period type, an optional start and end date in form "YEAR-MONTH-DAY", and a optional
+#   'True' or 'False' if you want the plot to show on the screen. You have the option of 
+#   setting the start and end dates but if not they will be set to their max periods, the
+#   table for period types to pass in is as follows:
+#     - 1, minute frequency period
+#     - 2, five minute frequency period
+#     - 3, ten mintue frequency period
+#     - 4, fifteen minute freqiuency period
+#     - 5, thirty minute frequency period
+#     - 6, daily frequency period
+#     - 7, weekly priving period
+
+test_1 = Operate_Historical(ticker="bruh", source="tda", period=6, start_date="2022-8-1", end_date="2022-9-1", show_plot=True)
+# test_1 = Operate_Historical(ticker="TSLA", source="tda", period=6)
 test_1.load_data()
 test_1.run_simulation()

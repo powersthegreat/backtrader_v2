@@ -1,20 +1,21 @@
+# class based object that contains a start date(current_date if not specified)
+# in list form [day, month, year], end date(max days for period if not specified)
+#  in list form [day, month, year], a frequency period of either:
+# 1(every minute), 2(every 5 minutes), 3(every ten minutes), 4(every 15 minutes),
+# 5(every 30 minutes), 6(every day), 7(every week)
+
 from td_ameritrade.authentication import oauth
 import datetime
 from datetime import timedelta
 import pandas
 
-# class based object that will contains a start date(current_date if not specified)
-# in list form [day, month, year]
-# end date(max days for period if not specified)
-#  in list form [day, month, year], a frequency period of either:
-# 1(every minute), 2(every 5 minutes), 3(every ten minutes), 4(every 15 minutes),
-# 5(every 30 minutes), 6(every day), 7(every week)
-
 class Historical_Pricing:
-    def __init__(self, ticker, period):
+    def __init__(self, ticker, period, start_date, end_date):
+        #start date gets passed in as "year-month-day"
+        #end date gets passed in as "year-month-day"
         self.ticker = ticker
-        self.start_date = None
-        self.end_date = None
+        self.start_date = start_date
+        self.end_date = end_date
         self.period = period
         self.csv_length = None
 
@@ -40,79 +41,80 @@ class Historical_Pricing:
         self.end_date = end_date_list
         return self.end_date
     
-    def set_start_as_today(self):
+    def set_end_as_today(self):
         #if no start date is defined then current
         #date is used in format [day, month, year]
         today_date = str(datetime.date.today())
         today_date_list = today_date.split("-")
-        start_day_list = []
-        start_day_list.append(today_date_list[2])
-        start_day_list.append(today_date_list[1])
-        start_day_list.append(today_date_list[0])
-        self.start_date = start_day_list
-        return self.start_date
+        end_day_list = []
+        end_day_list.append(today_date_list[2])
+        end_day_list.append(today_date_list[1])
+        end_day_list.append(today_date_list[0])
+        self.end_date = end_day_list
+        return self.end_date
     
-    def set_end_date_as_max(self):
-        #if no end date is defined then max for
+    def set_start_date_as_max(self):
+        #if no start date is defined then max for
         #period is used in format [day, month, year]
         today_datetime = datetime.date.today()
         if self.period == 1:
             #every minute
             max_period = 17 #really 48 but we can ramp up later
             max_date = today_datetime - timedelta(days=max_period)
-            self.set_end_date(str(max_date))
+            self.set_start_date(str(max_date))
         elif self.period == 2:
             #every 5 minutes
             max_period = 116 #9 months worth of work days
             max_date = today_datetime - timedelta(days=max_period)
-            self.set_end_date(str(max_date))
+            self.set_start_date(str(max_date))
         elif self.period == 3:
             #every 10 minutes
             max_period = 118 #9 months worth of work days
             max_date = today_datetime - timedelta(days=max_period)
-            self.set_end_date(str(max_date))
+            self.set_start_date(str(max_date))
         elif self.period == 4:
             #every 15 mintues
             max_period = 118 #9 months worth of work days
             max_date = today_datetime - timedelta(days=max_period)
-            self.set_end_date(str(max_date))
+            self.set_start_date(str(max_date))
         elif self.period == 5:
             #every 30 minutes
             max_period = 119 #9 months worth of work days
             max_date = today_datetime - timedelta(days=max_period)
-            self.set_end_date(str(max_date))
+            self.set_start_date(str(max_date))
         elif self.period == 6:
             #every day
             max_period = 6894 #back to 1985
             max_date = today_datetime - timedelta(days=max_period)
-            self.set_end_date(str(max_date))
+            self.set_start_date(str(max_date))
         elif self.period == 7:
             # every week
             max_period = 10009 #back to 1985
             max_date = today_datetime - timedelta(days=max_period)
-            self.set_end_date(str(max_date))
+            self.set_start_date(str(max_date))
         else:
             raise IndexError("Period input not allowed.")
-        return self.end_date
+        return self.start_date
 
     def check_start_date(self):
         if self.start_date == None:
-            start = self.set_start_as_today()
+            start = self.set_start_date_as_max()
         else:
-            return
+            self.set_start_date(self.start_date)
             
     def check_end_date(self):
         if self.end_date == None:
-            end = self.set_end_date_as_max()
+            end = self.set_end_as_today()
         else:
-            return
+            self.set_end_date(self.end_date)
 
     def get_price_history(self):
+
         self.check_start_date()
         self.check_end_date()
-        
-        start_date_formatted = datetime.datetime(year = int(self.end_date[2]), month=int(self.end_date[1]), day=int(self.end_date[0]))
-        end_date_formatted = datetime.datetime(year=int(self.start_date[2]), month=int(self.start_date[1]), day=int(self.start_date[0]))
+
+        start_date_formatted = datetime.datetime(year = int(self.start_date[2]), month=int(self.start_date[1]), day=int(self.start_date[0]))
+        end_date_formatted = datetime.datetime(year=int(self.end_date[2]), month=int(self.end_date[1]), day=int(self.end_date[0]))
 
         client = oauth.get_client()
 

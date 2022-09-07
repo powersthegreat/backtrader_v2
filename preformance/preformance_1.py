@@ -49,11 +49,10 @@ class Preformance:
                 raise RuntimeError("Order was not 'buy' or 'sell'.")
 
         plt.savefig("preformance\plots\simulation_plot.png") #dpi=1000 as parameter?
-
+        print("results plotted: PASSED")
         if self.show_plot == True:
             plt.show()
 
-        print("Results Plotted")
         
     
     def write_sim_records(self):
@@ -64,7 +63,7 @@ class Preformance:
             for i in range(0, len(self.sim_records)):
                 writer.writerow(self.sim_records[i])
             csvfile.close()
-        print("Orders Recorded")
+        print("orders recorded: PASSED")
         
     def generate_results(self):
         self.write_sim_records()

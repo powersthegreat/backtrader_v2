@@ -6,10 +6,12 @@ import pandas
 
 
 class Feed_Historical_Pricing:
-    def __init__(self, ticker, source, period):
+    def __init__(self, ticker, source, period, start_date, end_date):
         self.ticker = ticker
         self.source = source
         self.period = period
+        self.start_date = start_date
+        self.end_date = end_date
         self.csv_length = None
         self.historical_pricing_df = None
         self.source = source
@@ -26,7 +28,7 @@ class Feed_Historical_Pricing:
             #     - 6, daily frequency period
             #     - 7, weekly priving period
             # more on 'get_tda_hist' module
-            data_test = tda_hist.Historical_Pricing(self.ticker, self.period)
+            data_test = tda_hist.Historical_Pricing(self.ticker, self.period, self.start_date, self.end_date)
             csv_length = data_test.get_price_history()
             self.csv_length = csv_length    
         elif self.source == "yahoo":
