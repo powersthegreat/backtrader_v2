@@ -45,5 +45,3 @@ class Operate_Historical():
 test_1 = Operate_Historical("tda")
 test_1.load_data()
 test_1.run_simulation()
-
-    

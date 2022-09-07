@@ -33,8 +33,20 @@ class Preformance:
         close_list = [i[0] for i in order_list]
         plt.figure()
         plt.plot(times_list, close_list)
-        plt.savefig("preformance\plots\sim_plot.png")
-        print("Plotted")
+        plt.xlabel("price")
+        plt.ylabe("timestamp")
+
+        for sim_order in self.sim_records:
+            if sim_order[2] == "buy":
+                plt.scatter(sim_order[0], sim_order[1]-2, color='g', s=25, marker="^")
+            elif sim_order[2] == "sell":
+                plt.scatter(sim_order[0], sim_order[1]+2, color='r', s=25, marker="v")
+            else:
+                raise RuntimeError("Order was not 'buy' or 'sell'.")
+
+        plt.savefig("preformance\plots\simulation_plot.png") #dpi=1000 as parameter?
+        plt.show()
+        print("Results Plotted")
     
     def write_sim_records(self):
         feild_names = ["datetime", "close", "order"]
@@ -44,6 +56,7 @@ class Preformance:
             for i in range(0, len(self.sim_records)):
                 writer.writerow(self.sim_records[i])
             csvfile.close()
+        print("Orders Recorded")
         
     def generate_results(self):
         self.write_sim_records()
