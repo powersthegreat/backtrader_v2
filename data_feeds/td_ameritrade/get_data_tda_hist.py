@@ -92,7 +92,7 @@ class Historical_Pricing:
             max_date = today_datetime - timedelta(days=max_period)
             self.set_end_date(str(max_date))
         else:
-            raise IndexError("Period mode input not allowed.")
+            raise IndexError("Period input not allowed.")
         return self.end_date
 
     def check_start_date(self):

@@ -4,7 +4,10 @@ from datetime import datetime
 import csv
 
 class Preformance:
-    def __init__(self):
+    def __init__(self, source, ticker, show_plot):
+        self.source = source
+        self.ticker = ticker
+        self.show_plot = show_plot
         self.order_dict = {}
         self.sim_records = []
         
@@ -33,8 +36,9 @@ class Preformance:
         close_list = [i[0] for i in order_list]
         plt.figure()
         plt.plot(times_list, close_list)
-        plt.xlabel("price")
-        plt.ylabe("timestamp")
+        plt.title(f"{self.source} feed for {self.ticker}")
+        plt.xlabel("close")
+        plt.ylabel("timestamp")
 
         for sim_order in self.sim_records:
             if sim_order[2] == "buy":
@@ -45,12 +49,16 @@ class Preformance:
                 raise RuntimeError("Order was not 'buy' or 'sell'.")
 
         plt.savefig("preformance\plots\simulation_plot.png") #dpi=1000 as parameter?
-        plt.show()
+
+        if self.show_plot == True:
+            plt.show()
+
         print("Results Plotted")
+        
     
     def write_sim_records(self):
         feild_names = ["datetime", "close", "order"]
-        with open("preformance\sim_records\sim_records.csv", "w", newline="") as csvfile:
+        with open(f"preformance\sim_records\simulation_records.csv", "w", newline="") as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(feild_names)
             for i in range(0, len(self.sim_records)):

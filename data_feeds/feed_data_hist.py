@@ -6,13 +6,16 @@ import pandas
 
 
 class Feed_Historical_Pricing:
-    def __init__(self, source):
+    def __init__(self, ticker, source, period):
+        self.ticker = ticker
+        self.source = source
+        self.period = period
         self.csv_length = None
         self.historical_pricing_df = None
         self.source = source
         
 
-    def create_csv(self, period = 6):
+    def create_csv(self):
         if self.source == "tda":
             # input syntax:
             #     - 1, minute frequency period
@@ -23,7 +26,7 @@ class Feed_Historical_Pricing:
             #     - 6, daily frequency period
             #     - 7, weekly priving period
             # more on 'get_tda_hist' module
-            data_test = tda_hist.Historical_Pricing("AAPL", period)
+            data_test = tda_hist.Historical_Pricing(self.ticker, self.period)
             csv_length = data_test.get_price_history()
             self.csv_length = csv_length    
         elif self.source == "yahoo":
