@@ -1,16 +1,28 @@
+#the main driver of the software, in charge of pulling data from feed classes
+#sending data too preformance classes (graphing and records), and sending
+#data to the stradegy class then receiving signals and executing
+
+'''
+work still in progress, need some sort of P/L tracking class,
+buy/sell order 'routes', and probably more
+'''
+
 import sys
 sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\data_feeds')
 import feed_data_hist
 sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\preformance')
 import preformance_1
 
-# C:\Users\Owner\Desktop\backtrader_v2\data_feeds\feed_data_hist.py
-# C:\Users\Owner\Desktop\backtrader_v2\operate\operate_1.py
-# operate doesn't seem like it needs to be class based...but may
-# be useful in the future so I will make it this way
 
 class Operate_Historical():
     def __init__(self, ticker, source, period=6, show_plot=True, start_date=None, end_date=None):
+        #class takes a ticker(as string value), a source(as a string value), a 
+        #period (integer 1-7 inclusive representing the frequency between data), 
+        #a start date (string in form "year-month-day"), and a end date (string 
+        #in form "year-month-date"). also holds a show plot variable(if user wants
+        #plot to pop up on the screen), and a loaded data object used for storing
+        #data feed object
+
         self.ticker = ticker
         self.source = source
         self.period = period
@@ -21,14 +33,25 @@ class Operate_Historical():
         self.loaded_data_obj = None
 
     def load_data(self):
+        #method calls Feed_Historical_Pricing method from feed_data_hist
+        #module passing in the ticker, source, period, and start+end dates
+        #creates the csv, reads the csv, stores the created csv length
+        #and stores the data feed object created to be used in the 
+        #run_simulation method
+
         loaded_data = feed_data_hist.Feed_Historical_Pricing(self.ticker, self.source, self.period, self.start_date, self.end_date)
         loaded_data.create_csv()
         loaded_data.read_csv()
+        #saving csv length to memeber variable
         self.csv_length = loaded_data.csv_length
         self.loaded_data_obj = loaded_data
         print("load data: PASSED")
 
     def run_simulation(self):
+        '''
+        work in progress...
+        '''
+
         #start object of graph and records class
         preformance = preformance_1.Preformance(self.source, self.ticker, self.show_plot)
         #start object of stradegy class
@@ -50,7 +73,7 @@ class Operate_Historical():
 
 
 
-# input syntax:
+# initialization input syntax:
 # - when initializing a Operate_Historical object pass in the ticker, data feed source,
 #   period type, an optional start and end date in form "YEAR-MONTH-DAY", and a optional
 #   'True' or 'False' if you want the plot to show on the screen. You have the option of 
@@ -64,7 +87,7 @@ class Operate_Historical():
 #     - 6, daily frequency period
 #     - 7, weekly priving period
 
-test_1 = Operate_Historical(ticker="bruh", source="tda", period=6, start_date="2022-8-1", end_date="2022-9-1", show_plot=True)
+test_1 = Operate_Historical(ticker="AAPL", source="tda", period=6, start_date="2022-8-1", end_date="2022-9-1", show_plot=True)
 # test_1 = Operate_Historical(ticker="TSLA", source="tda", period=6)
 test_1.load_data()
 test_1.run_simulation()
