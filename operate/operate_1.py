@@ -15,7 +15,7 @@ import preformance_1
 
 
 class Operate_Historical():
-    def __init__(self, ticker, source, period=6, show_plot=True, start_date=None, end_date=None):
+    def __init__(self, ticker, source, period=6, show_plot=False, start_date=None, end_date=None):
         #class takes a ticker(as string value), a source(as a string value), a 
         #period (integer 1-7 inclusive representing the frequency between data), 
         #a start date (string in form "year-month-day"), and a end date (string 
