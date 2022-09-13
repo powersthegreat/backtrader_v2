@@ -12,7 +12,7 @@ sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\data_feeds')
 import feed_data_hist
 sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\preformance\plotting')
 import plotting_1
-sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\stradegies\stradegy_1.py')
+sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\stradegies')
 import stradegy_1
 sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\preformance\results')
 import results_1
@@ -35,6 +35,7 @@ class Operate_Historical():
         self.end_date = end_date
         self.csv_length = None
         self.loaded_data_obj = None
+        self.order_size = order_size
 
     def load_data(self):
         #method calls Feed_Historical_Pricing method from feed_data_hist
@@ -70,18 +71,13 @@ class Operate_Historical():
             #send row dict to graph class
             plot.pull_data_feed(row_dict, order)
             #send row dict to results class
-            results.pull_data_feed(row_dict, order)
-            # if order == "buy":
-            #     #send to results class
-            #     pass
-            # elif order == "sell":
-            #     #send to results class
-            #     pass
+            result.pull_data_feed(row_dict, order)
+            
         #plotting and writing(to csv) results
-        p_and_l_list = results.get_p_and_l_list()
+        p_and_l_list = result.get_p_and_l_list()
         plot.push_p_and_l_list(p_and_l_list)
         plot.plot_results()
-        results.write_results()
+        result.write_results()
         print("run simulation: PASSED")
 
 
@@ -101,6 +97,6 @@ class Operate_Historical():
 #     - 6, daily frequency period
 #     - 7, weekly priving period
 
-test_1 = Operate_Historical(ticker="AAPL", source="tda", period=6, start_date="2022-8-1", end_date="2022-9-1", show_plot=False, order_size=100)
+test_1 = Operate_Historical(ticker="BBBY", source="tda", period=6, start_date="2021-9-1", end_date=None, show_plot=True, order_size=100)
 test_1.load_data()
 test_1.run_simulation()

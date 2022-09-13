@@ -24,14 +24,18 @@ times_list_3000 = '2015-09-23 00:00:00'
 times_list_4000 = '2019-09-13 00:00:00'
 
 plt.figure()
+plt.subplot(2, 1, 1)
 plt.rcParams.update({'font.size':5})
 plt.plot(times_list, close_list, 'k')
+
+plt.subplot(2, 1, 2)
 plt.scatter(times_list_2000, 50, color='g', s=25, marker="^")
 plt.scatter(times_list_3000, 100, color='r', s=25, marker="v")
 plt.scatter(times_list_4000, 150, color='g', s=25, marker="^")
 
 plt.xlabel("Date")
 plt.ylabel("Price")
+plt.tight_layout()
 plt.savefig("test_plot.png", dpi=1000)
 plt.show()
 

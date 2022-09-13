@@ -10,7 +10,7 @@ from datetime import datetime
 
 
 class Plot:
-    def __init__(self, source, ticker, show_plot, order_size):
+    def __init__(self, source, ticker, show_plot):
         self.source = source
         self.ticker = ticker
         self.show_plot = show_plot
@@ -60,8 +60,8 @@ class Plot:
         #creating close lsit to be y axis
         close_list = [i[0] for i in order_list]
         plt.figure()
+        plt.subplot(2, 1, 1)
         plt.plot(times_list, close_list, 'r')
-        plt.plot(times_list, self.p_and_l_list, 'b')
         plt.title(f"{self.source} feed for {self.ticker}")
         plt.xlabel("close")
         plt.ylabel("timestamp")
@@ -73,7 +73,13 @@ class Plot:
                 plt.scatter(sim_order[0], sim_order[1]+2, color='r', s=25, marker="v")
             else:
                 raise RuntimeError("Order was not 'buy' or 'sell'.")
+        
+        plt.subplot(2, 1, 2)
+        plt.plot(times_list, self.p_and_l_list, 'b')
+        plt.xlabel("P/L")
+        plt.ylabel("timestamp")
 
+        plt.tight_layout()
         plt.savefig("preformance\plotting\plots\sim_plot.png") #dpi=1000 as parameter?
         print("plot results: PASSED")
         if self.show_plot == True:

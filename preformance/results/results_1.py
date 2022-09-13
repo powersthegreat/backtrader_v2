@@ -5,6 +5,8 @@
 #                           - send end to plot
 #             - resulting record file:
 #                                     - passed to plot class
+from datetime import datetime
+import csv
 
 class Results:
     def __init__(self, ticker, source, order_size):
@@ -33,12 +35,12 @@ class Results:
             print("sell - holding")
 
         elif self.holding and order == "buy":
-            self.p_and_l += (float(self.data["close"]) - self.entry_price)*self.order_size
+            self.p_and_l += (float(data["close"]) - self.entry_price)*self.order_size
             self.p_and_l_list.append(self.p_and_l)
             print("buy - not holding")
             
         elif self.holding and order == "sell":
-            self.p_and_l += (self.entry_price - float(self.data["close"]))*self.order_size
+            self.p_and_l += (self.entry_price - float(data["close"]))*self.order_size
             self.p_and_l_list.append(self.p_and_l)
             print("sell - not holding")
 
@@ -47,7 +49,7 @@ class Results:
             pass
         
 
-    def create_results(self):
+    def create_results(self, data, order):
         close_price = data["close"]
         #changes datetime stamp to normal ten digit stamp is in longer format
         if len(str(data["datetime"])) > 10:
@@ -73,7 +75,7 @@ class Results:
 
     def write_results(self):
         feild_names = ["datetime", "close", "order", "P/L"]
-        with open(f"preformance\results\csvs\simulation_records.csv", "w", newline="") as csvfile:
+        with open(f"preformance/results/csvs/simulation_records.csv", "w", newline="") as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(feild_names)
             for i in range(0, len(self.sim_records)):
