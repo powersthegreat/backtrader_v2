@@ -10,12 +10,16 @@ buy/sell order 'routes', and probably more
 import sys
 sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\data_feeds')
 import feed_data_hist
-sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\preformance')
-import preformance_1
+sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\preformance\plotting')
+import plotting_1
+sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\stradegies\stradegy_1.py')
+import stradegy_1
+sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\preformance\results')
+import results_1
 
 
 class Operate_Historical():
-    def __init__(self, ticker, source, period=6, show_plot=False, start_date=None, end_date=None):
+    def __init__(self, ticker, source, period=6, show_plot=False, start_date=None, end_date=None, order_size=100):
         #class takes a ticker(as string value), a source(as a string value), a 
         #period (integer 1-7 inclusive representing the frequency between data), 
         #a start date (string in form "year-month-day"), and a end date (string 
@@ -52,22 +56,32 @@ class Operate_Historical():
         work in progress...
         '''
 
-        #start object of graph and records class
-        preformance = preformance_1.Preformance(self.source, self.ticker, self.show_plot)
         #start object of stradegy class
+        stradegy = stradegy_1.Stradegy(self.order_size)
+        #start object of graph class
+        plot = plotting_1.Plot(self.source, self.ticker, self.show_plot)
+        #start object of results class
+        result = results_1.Results(self.ticker, self.source, self.order_size)
+
         for i in range(0, self.csv_length): #should be self.csv_length
             row_dict = self.loaded_data_obj.get_increment_df(i)
-            #send row dict to graph class
-            preformance.push_to_order_dict_and_records(row_dict, "pass")
             #send row dict to stradegy class
-            #if stradegy returns "nothing" -> continue
-            #elif stradegy returns "buy" ->
-            # - mark it on the graph
-            # - send appropriate data to record object
-            #elif stradegy returns "sell" ->
-            # - mark it on the graph
-            # - send appropriate data to records object
-        preformance.generate_results()
+            order = stradegy.logic(row_dict)
+            #send row dict to graph class
+            plot.pull_data_feed(row_dict, order)
+            #send row dict to results class
+            results.pull_data_feed(row_dict, order)
+            # if order == "buy":
+            #     #send to results class
+            #     pass
+            # elif order == "sell":
+            #     #send to results class
+            #     pass
+        #plotting and writing(to csv) results
+        p_and_l_list = results.get_p_and_l_list()
+        plot.push_p_and_l_list(p_and_l_list)
+        plot.plot_results()
+        results.write_results()
         print("run simulation: PASSED")
 
 
@@ -87,7 +101,6 @@ class Operate_Historical():
 #     - 6, daily frequency period
 #     - 7, weekly priving period
 
-test_1 = Operate_Historical(ticker="AAPL", source="tda", period=6, start_date="2022-8-1", end_date="2022-9-1", show_plot=True)
-# test_1 = Operate_Historical(ticker="TSLA", source="tda", period=6)
+test_1 = Operate_Historical(ticker="AAPL", source="tda", period=6, start_date="2022-8-1", end_date="2022-9-1", show_plot=False, order_size=100)
 test_1.load_data()
 test_1.run_simulation()

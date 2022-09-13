@@ -7,5 +7,11 @@
 # print(today)
 # print(result)
 
-for i in range(10, 0, -1):
-    print(i)
+# for i in range(10, 0, -1):
+#     print(i)
+
+num = "7.25"
+print(type(num))
+num = int(num)
+print(type(num))
+print(num)

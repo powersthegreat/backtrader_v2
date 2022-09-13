@@ -181,7 +181,6 @@ class Historical_Pricing:
         #df.shape returns a tuple of the length and width of the data frame, the [0]
         #index sets csv_length to the length of the dataframe
         csv_length = df.shape[0]
-        print(csv_length)
         #csv is built in form "row#, increment data, ticker, after_hours_data(T/F)"
         df.to_csv(r'data_feeds\td_ameritrade\data_csvs\tda_historical.csv')
         #the length of the csv(found from dataframe) is returned to be used in later processes

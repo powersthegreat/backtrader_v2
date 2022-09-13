@@ -38,7 +38,6 @@ class Feed_Historical_Pricing:
             #creating csv from td ameritrade data feed
             data_test = tda_hist.Historical_Pricing(self.ticker, self.period, self.start_date, self.end_date)
             csv_length = data_test.get_price_history()
-            print(csv_length)
             self.csv_length = csv_length    
         elif self.source == "yahoo":
             #creating csv from yahoo finance data feed
