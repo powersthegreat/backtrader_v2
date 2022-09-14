@@ -63,8 +63,8 @@ class Plot:
         plt.subplot(2, 1, 1)
         plt.plot(times_list, close_list, 'r')
         plt.title(f"{self.source} feed for {self.ticker}")
-        plt.xlabel("close")
-        plt.ylabel("timestamp")
+        plt.xlabel("datetime stamp")
+        plt.ylabel("close ($)")
 
         for sim_order in self.sim_records:
             if sim_order[2] == "buy":
@@ -76,8 +76,8 @@ class Plot:
         
         plt.subplot(2, 1, 2)
         plt.plot(times_list, self.p_and_l_list, 'b')
-        plt.xlabel("P/L")
-        plt.ylabel("timestamp")
+        plt.xlabel("datetime stamp")
+        plt.ylabel("P/L ($)")
 
         plt.tight_layout()
         plt.savefig("preformance\plotting\plots\sim_plot.png") #dpi=1000 as parameter?

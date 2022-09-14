@@ -73,11 +73,17 @@ class Operate_Historical():
             #send row dict to results class
             result.pull_data_feed(row_dict, order)
             
-        #plotting and writing(to csv) results
+        #pulling profit and loss list from results class
         p_and_l_list = result.get_p_and_l_list()
+        #pushing profit and loss list to plotting class
         plot.push_p_and_l_list(p_and_l_list)
+        #plotting close vrs time and P/L vrs time
         plot.plot_results()
+        #plotting stradegy vrs time and close vrs time
+        stradegy.plot_stradegy()
+        #writing order results to csv file form results class
         result.write_results()
+        #signaling simulation is over
         print("run simulation: PASSED")
 
 
@@ -97,6 +103,6 @@ class Operate_Historical():
 #     - 6, daily frequency period
 #     - 7, weekly priving period
 
-test_1 = Operate_Historical(ticker="BBBY", source="tda", period=6, start_date="2021-9-1", end_date=None, show_plot=True, order_size=100)
+test_1 = Operate_Historical(ticker="AAPL", source="tda", period=5, start_date="2022-9-1", end_date=None, show_plot=True, order_size=100)
 test_1.load_data()
 test_1.run_simulation()
