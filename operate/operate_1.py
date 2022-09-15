@@ -53,10 +53,6 @@ class Operate_Historical():
         print("load data: PASSED")
 
     def run_simulation(self):
-        '''
-        work in progress...
-        '''
-
         #start object of stradegy class
         stradegy = stradegy_1.Stradegy(self.order_size)
         #start object of graph class
@@ -103,6 +99,6 @@ class Operate_Historical():
 #     - 6, daily frequency period
 #     - 7, weekly priving period
 
-test_1 = Operate_Historical(ticker="AAPL", source="tda", period=5, start_date="2022-9-1", end_date=None, show_plot=True, order_size=100)
+test_1 = Operate_Historical(ticker="AAPL", source="tda", period=5, start_date="2022-8-1", end_date=None, show_plot=True, order_size=100)
 test_1.load_data()
 test_1.run_simulation()

@@ -20,5 +20,5 @@ class Plot_Stradegy:
         plt.plot(x_list, self.close_list, 'b')
         plt.plot(x_list, self.stradegy_list, 'r')
         plt.tight_layout()
-        # plt.savefig("stradegies\plotting\plots\strat_plot.png")
+        plt.savefig("stradegies\plotting\plots\strat_plot.png")
         plt.show()

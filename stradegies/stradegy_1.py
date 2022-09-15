@@ -21,7 +21,7 @@ import plot_stradegy
 class Stradegy:
     def __init__(self, order_size):
         self.order_size = order_size
-        self.period = 10
+        self.period = 100
         self.sma_queue = []
         self.stradegy_started = False
         self.prev_sma_value = None
@@ -43,7 +43,7 @@ class Stradegy:
             self.sma_queue.append(close)
             print(f"close: {close}, sma: building queue-a, order: 'pass'")
             self.test_plot.append_stradegy(close)
-            time.sleep(.15)
+            time.sleep(.01)
             return "pass"
         #loading prev_sma_value
         if self.prev_sma_value == None:
@@ -52,7 +52,7 @@ class Stradegy:
             self.sma_queue.append(close)
             print(f"close: {close}, sma: building queue-b, order: 'pass'")
             self.test_plot.append_stradegy(close)
-            time.sleep(.15)
+            time.sleep(.01)
             return "pass"
         
         current_sma = ((close) + sum(self.sma_queue))/self.period
@@ -71,7 +71,7 @@ class Stradegy:
                 self.prev_sma_value = current_sma
                 print("stradegy started long")
                 print(f"close: {close}, rev sma: {self.prev_sma_value}, sma: {current_sma}, order: 'buy'")
-                time.sleep(.15)
+                time.sleep(.01)
                 return "buy"
             elif self.prev_sma_value <= close and current_sma > close:
                 #starting short when sma goes from under close to above
@@ -83,14 +83,14 @@ class Stradegy:
                 self.prev_sma_value = current_sma
                 print("stradegy start short")
                 print(f"close: {close}, rev sma: {self.prev_sma_value}, sma: {current_sma}, order: 'sell'")
-                time.sleep(.15)
+                time.sleep(.01)
                 return "sell"
             else:
                 self.sma_queue.pop(0)
                 self.sma_queue.append(close)
                 self.prev_sma_value = current_sma
                 print(f"close: {close}, prev sma: {self.prev_sma_value}, sma: {current_sma}, order: 'pass'")
-                time.sleep(.15)
+                time.sleep(.01)
                 return "pass"
         
         #running started stradegy
@@ -103,7 +103,7 @@ class Stradegy:
                 self.sma_queue.pop(0)
                 self.sma_queue.append(close)
                 self.prev_sma_value = current_sma
-                time.sleep(.15)
+                time.sleep(.01)
                 return "sell"
                 pass
             elif self.current_state == "buy" and close >= current_sma:
@@ -112,7 +112,7 @@ class Stradegy:
                 self.sma_queue.pop(0)
                 self.sma_queue.append(close)
                 self.prev_sma_value = current_sma
-                time.sleep(.15)
+                time.sleep(.01)
                 return "pass"
             elif self.current_state == "sell" and close > current_sma:
                 #buying back when close crosses above sma
@@ -121,7 +121,7 @@ class Stradegy:
                 self.sma_queue.pop(0)
                 self.sma_queue.append(close)
                 self.prev_sma_value = current_sma
-                time.sleep(.15)
+                time.sleep(.01)
                 return "buy"
             elif self.current_state == "sell" and close <= current_sma:
                 #holding
@@ -129,7 +129,7 @@ class Stradegy:
                 self.sma_queue.pop(0)
                 self.sma_queue.append(close)
                 self.prev_sma_value = current_sma
-                time.sleep(.15)
+                time.sleep(.01)
                 return "pass"
             else:
                 raise RuntimeError("Something went wrong in stradegy!")

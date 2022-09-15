@@ -35,12 +35,12 @@ class Results:
             print("sell - holding")
 
         elif self.holding and order == "buy":
-            self.p_and_l += (float(data["close"]) - self.entry_price)*self.order_size
+            self.p_and_l += (self.entry_price - float(data["close"]))*self.order_size
             self.p_and_l_list.append(self.p_and_l)
             print("buy - not holding")
             
         elif self.holding and order == "sell":
-            self.p_and_l += (self.entry_price - float(data["close"]))*self.order_size
+            self.p_and_l += (float(data["close"]) - self.entry_price)*self.order_size
             self.p_and_l_list.append(self.p_and_l)
             print("sell - not holding")
 
@@ -60,7 +60,6 @@ class Results:
         else:
             #datetime stamp is ten digit format
             time_stamp = str(datetime.fromtimestamp(data["datetime"]))
-        current_p_and_l = self.p_and_l
 
         if order != "pass":
             #adding to sim_records in list form [time_stamp, close_price, order]
@@ -68,7 +67,7 @@ class Results:
             temp_order.append(time_stamp)
             temp_order.append(close_price)
             temp_order.append(order)
-            temp_order.append(current_p_and_l)
+            temp_order.append(self.p_and_l)
             self.sim_records.append(temp_order)
             temp_order = []
 
