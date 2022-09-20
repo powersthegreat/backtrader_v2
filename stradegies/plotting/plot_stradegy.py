@@ -18,7 +18,12 @@ class Plot_Stradegy:
         x_list = [i for i in range(len(self.close_list))]
         plt.figure()
         plt.plot(x_list, self.close_list, 'b')
-        plt.plot(x_list, self.stradegy_list, 'r')
+        #plot stradegy as line
+        # plt.plot(x_list, self.stradegy_list, 'r')
+        #plot stradegy as points
+        for i in range(len(x_list)):
+            plt.scatter(x_list[i], self.stradegy_list[i], color="r", s=8)
+
         plt.tight_layout()
         plt.savefig("stradegies\plotting\plots\strat_plot.png")
         plt.show()

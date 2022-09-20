@@ -13,7 +13,7 @@ import feed_data_hist
 sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\preformance\plotting')
 import plotting_1
 sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\stradegies')
-import stradegy_1
+import stradegy_2
 sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\preformance\results')
 import results_1
 
@@ -54,7 +54,7 @@ class Operate_Historical():
 
     def run_simulation(self):
         #start object of stradegy class
-        stradegy = stradegy_1.Stradegy(self.order_size)
+        stradegy = stradegy_2.Stradegy(self.order_size)
         #start object of graph class
         plot = plotting_1.Plot(self.source, self.ticker, self.show_plot)
         #start object of results class
@@ -99,6 +99,6 @@ class Operate_Historical():
 #     - 6, daily frequency period
 #     - 7, weekly priving period
 
-test_1 = Operate_Historical(ticker="AAPL", source="tda", period=5, start_date="2022-8-1", end_date=None, show_plot=True, order_size=100)
+test_1 = Operate_Historical(ticker="AAPL", source="tda", period=6, start_date="2022-8-1", end_date=None, show_plot=True, order_size=100)
 test_1.load_data()
 test_1.run_simulation()

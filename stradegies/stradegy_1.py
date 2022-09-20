@@ -21,7 +21,8 @@ import plot_stradegy
 class Stradegy:
     def __init__(self, order_size):
         self.order_size = order_size
-        self.period = 100
+        #set period to one more than desired
+        self.period = 10
         self.sma_queue = []
         self.stradegy_started = False
         self.prev_sma_value = None
@@ -66,11 +67,11 @@ class Stradegy:
                 #reversely engineered than if stradegy started was true
                 self.current_state = "buy"
                 self.stradegy_started = True
+                print(f"close: {close}, prev sma: {self.prev_sma_value}, sma: {current_sma}, order: 'buy'")
                 self.sma_queue.pop(0)
                 self.sma_queue.append(close)
                 self.prev_sma_value = current_sma
                 print("stradegy started long")
-                print(f"close: {close}, rev sma: {self.prev_sma_value}, sma: {current_sma}, order: 'buy'")
                 time.sleep(.01)
                 return "buy"
             elif self.prev_sma_value <= close and current_sma > close:
@@ -78,18 +79,18 @@ class Stradegy:
                 #reversely engineered than if stradegy started was true
                 self.current_state = "sell"
                 self.stradegy_started = True
+                print(f"close: {close}, prev sma: {self.prev_sma_value}, sma: {current_sma}, order: 'sell'")
                 self.sma_queue.pop(0)
                 self.sma_queue.append(close)
                 self.prev_sma_value = current_sma
                 print("stradegy start short")
-                print(f"close: {close}, rev sma: {self.prev_sma_value}, sma: {current_sma}, order: 'sell'")
                 time.sleep(.01)
                 return "sell"
             else:
+                print(f"close: {close}, prev sma: {self.prev_sma_value}, sma: {current_sma}, order: 'pass'")
                 self.sma_queue.pop(0)
                 self.sma_queue.append(close)
                 self.prev_sma_value = current_sma
-                print(f"close: {close}, prev sma: {self.prev_sma_value}, sma: {current_sma}, order: 'pass'")
                 time.sleep(.01)
                 return "pass"
         
