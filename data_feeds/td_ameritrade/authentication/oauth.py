@@ -4,6 +4,9 @@
 
 from tda import auth, client
 import json
+import sys
+# sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\data_feeds\td_ameritrade\authentication')
+# import config
 from td_ameritrade.authentication import config
 
 def get_client():
@@ -24,4 +27,3 @@ def get_client():
         client = auth.client_from_login_flow(driver, config.api_key, config.redirect_url, config.token_path)
 
     return client
-
