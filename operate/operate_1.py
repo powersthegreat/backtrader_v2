@@ -16,6 +16,8 @@ sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\stradegies')
 import stradegy_2
 sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\preformance\results')
 import results_1
+sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\storage')
+import storage_1
 
 
 class Operate_Historical():
@@ -93,6 +95,10 @@ class Operate_Historical():
         #signaling simulation is over
         print("simulation: PASSED")
 
+    def move_to_storage(self):
+        storage = storage_1.Storage()
+        storage.move()
+
 
 
 
@@ -110,6 +116,7 @@ class Operate_Historical():
 #     - 6, daily frequency period
 #     - 7, weekly priving period
 
-test_1 = Operate_Historical(ticker="AAPL", source="tda", period=6, start_date="2022-11-1", end_date=None, show_plot=False, order_size=100)
+test_1 = Operate_Historical(ticker="TSLA", source="tda", period=6, start_date="2022-11-1", end_date=None, show_plot=False, order_size=100)
 test_1.load_data()
 test_1.run_simulation()
+# test_1.move_to_storage()
