@@ -6,7 +6,7 @@
 work still in progress, need some sort of P/L tracking class,
 buy/sell order 'routes', and probably more
 '''
-
+import datetime
 import sys
 sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\data_feeds')
 import feed_data_hist
@@ -36,6 +36,17 @@ class Operate_Historical():
         self.csv_length = None
         self.loaded_data_obj = None
         self.order_size = order_size
+        if self.end_date == None:
+            today_date = str(datetime.date.today())
+            today_date_list = today_date.split("-")
+            end_day_list = []
+            end_day_list.append(today_date_list[2])
+            end_day_list.append(today_date_list[1])
+            end_day_list.append(today_date_list[0])
+            current_date = "-".join(end_day_list)
+            self.sim_name = f"{ticker}_{period}_{start_date}_to_{current_date}"
+        else:
+            self.sim_name = f"{ticker}_{period}_{start_date}_to_{end_date}"
 
     def load_data(self):
         #method calls Feed_Historical_Pricing method from feed_data_hist
@@ -54,11 +65,11 @@ class Operate_Historical():
 
     def run_simulation(self):
         #start object of stradegy class
-        stradegy = stradegy_2.Stradegy(self.order_size)
+        stradegy = stradegy_2.Stradegy(self.order_size, self.show_plot, self.sim_name)
         #start object of graph class
-        plot = plotting_1.Plot(self.source, self.ticker, self.show_plot)
+        plot = plotting_1.Plot(self.source, self.ticker, self.show_plot, self.sim_name)
         #start object of results class
-        result = results_1.Results(self.ticker, self.source, self.order_size)
+        result = results_1.Results(self.ticker, self.source, self.order_size, self.sim_name)
 
         for i in range(0, self.csv_length): #should be self.csv_length
             row_dict = self.loaded_data_obj.get_increment_df(i)
@@ -80,7 +91,7 @@ class Operate_Historical():
         #writing order results to csv file form results class
         result.write_results()
         #signaling simulation is over
-        print("run simulation: PASSED")
+        print("simulation: PASSED")
 
 
 
@@ -99,6 +110,6 @@ class Operate_Historical():
 #     - 6, daily frequency period
 #     - 7, weekly priving period
 
-test_1 = Operate_Historical(ticker="AAPL", source="tda", period=5, start_date="2022-8-1", end_date=None, show_plot=True, order_size=100)
+test_1 = Operate_Historical(ticker="AAPL", source="tda", period=6, start_date="2022-11-1", end_date=None, show_plot=False, order_size=100)
 test_1.load_data()
 test_1.run_simulation()

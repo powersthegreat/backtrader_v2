@@ -4,7 +4,9 @@ from matplotlib import pyplot as plt
 from datetime import datetime
 
 class Plot_Stradegy:
-    def __init__(self):
+    def __init__(self, show_plot, sim_name):
+        self.show_plot = show_plot
+        self.sim_name = sim_name
         self.close_list = []
         self.stradegy_list = []
     
@@ -25,5 +27,6 @@ class Plot_Stradegy:
             plt.scatter(x_list[i], self.stradegy_list[i], color="r", s=8)
 
         plt.tight_layout()
-        plt.savefig("stradegies\plotting\plots\strat_plot.png")
-        plt.show()
+        plt.savefig(f"stradegies\plotting\plots/stradegy_{self.sim_name}.png")
+        if self.show_plot:
+            plt.show()

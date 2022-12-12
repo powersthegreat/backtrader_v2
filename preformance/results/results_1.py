@@ -9,10 +9,11 @@ from datetime import datetime
 import csv
 
 class Results:
-    def __init__(self, ticker, source, order_size):
+    def __init__(self, ticker, source, order_size, sim_name):
         self.ticker = ticker
         self.source = source
         self.order_size = order_size
+        self.sim_name = sim_name
         self.entry_price = 0
         self.p_and_l = 0
         self.p_and_l_list = []
@@ -26,23 +27,23 @@ class Results:
             self.entry_price = float(data["close"])
             self.holding = True
             self.p_and_l_list.append(self.p_and_l)
-            print("buy - holding")
+            # print("buy - holding")
 
         elif not self.holding and order == "sell":
             self.entry_price = float(data["close"])
             self.holding = True
             self.p_and_l_list.append(self.p_and_l)
-            print("sell - holding")
+            # print("sell - holding")
 
         elif self.holding and order == "buy":
             self.p_and_l += (self.entry_price - float(data["close"]))*self.order_size
             self.p_and_l_list.append(self.p_and_l)
-            print("buy - not holding")
+            # print("buy - not holding")
             
         elif self.holding and order == "sell":
             self.p_and_l += (float(data["close"]) - self.entry_price)*self.order_size
             self.p_and_l_list.append(self.p_and_l)
-            print("sell - not holding")
+            # print("sell - not holding")
 
         else:
             self.p_and_l_list.append(self.p_and_l)
@@ -74,7 +75,7 @@ class Results:
 
     def write_results(self):
         feild_names = ["datetime", "close", "order", "P/L"]
-        with open(f"preformance/results/csvs/simulation_records.csv", "w", newline="") as csvfile:
+        with open(f"preformance/results/csvs/{self.sim_name}.csv", "w", newline="") as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(feild_names)
             for i in range(0, len(self.sim_records)):

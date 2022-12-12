@@ -10,10 +10,11 @@ from datetime import datetime
 
 
 class Plot:
-    def __init__(self, source, ticker, show_plot):
+    def __init__(self, source, ticker, show_plot, sim_name):
         self.source = source
         self.ticker = ticker
         self.show_plot = show_plot
+        self.sim_name = sim_name
         self.order_dict = {}
         self.sim_records = []
         self.p_and_l_list = None
@@ -80,7 +81,7 @@ class Plot:
         plt.ylabel("P/L ($)")
 
         plt.tight_layout()
-        plt.savefig("preformance\plotting\plots\sim_plot.png") #dpi=1000 as parameter?
+        plt.savefig(f"preformance\plotting\plots\{self.sim_name}.png") #dpi=1000 as parameter?
         print("plot results: PASSED")
         if self.show_plot == True:
             plt.show()
