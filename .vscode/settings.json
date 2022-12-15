@@ -1,3 +1,10 @@
 {
-    "python.defaultInterpreterPath": "C:\\Program Files\\Python310"
+    "python.defaultInterpreterPath": "C:\\Program Files\\Python310",
+    "python.analysis.extraPaths": [
+        "./data_feeds",
+        "./preformance/plotting",
+        "./stradegies",
+        "./preformance/results",
+        "./storage"
+    ]
 }
