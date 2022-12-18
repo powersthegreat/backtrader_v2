@@ -22,6 +22,7 @@ class Results:
         
 
     def running_p_and_l(self, data, order):
+        # print(f"{self.holding} -- {order} -- {self.p_and_l} -- {data['close']}")
         #four cases
         if not self.holding and order == "buy":
             self.entry_price = float(data["close"])
@@ -38,11 +39,13 @@ class Results:
         elif self.holding and order == "buy":
             self.p_and_l += (self.entry_price - float(data["close"]))*self.order_size
             self.p_and_l_list.append(self.p_and_l)
+            self.holding = False
             # print("buy - not holding")
             
         elif self.holding and order == "sell":
             self.p_and_l += (float(data["close"]) - self.entry_price)*self.order_size
             self.p_and_l_list.append(self.p_and_l)
+            self.holding = False
             # print("sell - not holding")
 
         else:
@@ -63,18 +66,23 @@ class Results:
             time_stamp = str(datetime.fromtimestamp(data["datetime"]))
 
         if order != "pass":
-            #adding to sim_records in list form [time_stamp, close_price, order]
+            #adding to sim_records in list form [time_stamp, close_price, volume, order, p/l, change in p/l]
             temp_order = []
             temp_order.append(time_stamp)
             temp_order.append(close_price)
+            temp_order.append(data["volume"])
             temp_order.append(order)
             temp_order.append(self.p_and_l)
+            if len(self.sim_records) > 0:
+                temp_order.append(self.p_and_l - (self.sim_records[-1][4]))
+            else:
+                temp_order.append(0)
             self.sim_records.append(temp_order)
             temp_order = []
 
 
     def write_results(self):
-        feild_names = ["datetime", "close", "order", "P/L"]
+        feild_names = ["datetime", "close", "volume", "order", "P/L", "Change in P/L"]
         with open(f"preformance/results/csvs/{self.sim_name}.csv", "w", newline="") as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(feild_names)

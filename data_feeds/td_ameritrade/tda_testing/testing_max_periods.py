@@ -1,4 +1,7 @@
-from authentication import oauth
+
+import sys
+sys.path.append("C:/Users/Owner/Desktop/backtrader_v2/data_feeds/td_ameritrade/authentication")
+import oauth
 import datetime
 import pandas
 from datetime import timedelta

@@ -9,6 +9,7 @@ import sys
 # import config
 from td_ameritrade.authentication import config
 
+
 def get_client():
     try:
         #if log api has been accessed in past 30 days the token stored at the given

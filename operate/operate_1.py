@@ -13,7 +13,7 @@ import feed_data_hist
 sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\preformance\plotting')
 import plotting_1
 sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\stradegies')
-import stradegy_2
+import larry_connors_rsi_2 as strat
 sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\preformance\results')
 import results_1
 sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\storage')
@@ -63,11 +63,14 @@ class Operate_Historical():
         #saving csv length to memeber variable
         self.csv_length = loaded_data.csv_length
         self.loaded_data_obj = loaded_data
-        print("load data: PASSED")
+        if self.csv_length > 0:
+            print("load data: PASSED")
+        else:
+            print("load data: FAILED")
 
     def run_simulation(self):
         #start object of stradegy class
-        stradegy = stradegy_2.Stradegy(self.order_size, self.show_plot, self.sim_name)
+        stradegy = strat.Stradegy(self.order_size, self.show_plot, self.sim_name)
         #start object of graph class
         plot = plotting_1.Plot(self.source, self.ticker, self.show_plot, self.sim_name)
         #start object of results class
@@ -116,7 +119,7 @@ class Operate_Historical():
 #     - 6, daily frequency period
 #     - 7, weekly priving period
 
-test_1 = Operate_Historical(ticker="TSLA", source="tda", period=6, start_date="2022-11-1", end_date=None, show_plot=False, order_size=100)
+test_1 = Operate_Historical(ticker="SPY", source="tda", period=5, start_date="2022-10-01", end_date="2022-12-01", show_plot=False, order_size=10)
 test_1.load_data()
 test_1.run_simulation()
-# test_1.move_to_storage()
+test_1.move_to_storage()

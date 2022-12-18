@@ -70,6 +70,8 @@ class Storage:
         os.chdir('/Users/Owner/Desktop/backtrader_v2/stradegies/plotting/plots')
         for file in os.listdir():
             shutil.move(file, f'/Users/Owner/Desktop/backtrader_storage/{folder_name}')
+            
+        print("storage: PASSED")
 
 
 
