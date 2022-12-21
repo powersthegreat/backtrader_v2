@@ -7,13 +7,14 @@ work still in progress, need some sort of P/L tracking class,
 buy/sell order 'routes', and probably more
 '''
 import datetime
+from datetime import datetime
 import sys
 sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\data_feeds')
 import feed_data_hist
 sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\preformance\plotting')
 import plotting_1
 sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\stradegies')
-import larry_connors_rsi_2 as strat
+import stradegy_1 as strat
 sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\preformance\results')
 import results_1
 sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\storage')
@@ -21,7 +22,7 @@ import storage_1
 
 
 class Operate_Historical():
-    def __init__(self, ticker, source, period=6, show_plot=False, start_date=None, end_date=None, order_size=100):
+    def __init__(self, ticker, source, period=6, show_plot=False, start_date=None, end_date=None, order_size=100, after_hours=False):
         #class takes a ticker(as string value), a source(as a string value), a 
         #period (integer 1-7 inclusive representing the frequency between data), 
         #a start date (string in form "year-month-day"), and a end date (string 
@@ -38,6 +39,7 @@ class Operate_Historical():
         self.csv_length = None
         self.loaded_data_obj = None
         self.order_size = order_size
+        self.after_hours = after_hours
         if self.end_date == None:
             today_date = str(datetime.date.today())
             today_date_list = today_date.split("-")
@@ -78,12 +80,31 @@ class Operate_Historical():
 
         for i in range(0, self.csv_length): #should be self.csv_length
             row_dict = self.loaded_data_obj.get_increment_df(i)
-            #send row dict to stradegy class
-            order = stradegy.logic(row_dict)
-            #send row dict to graph class
-            plot.pull_data_feed(row_dict, order)
-            #send row dict to results class
-            result.pull_data_feed(row_dict, order)
+
+            if not self.after_hours:
+                time_short_1 = str(row_dict["datetime"])
+                time_short_2 = time_short_1[0:10]
+                time_stamp = int(str(datetime.fromtimestamp(int(time_short_2)))[-8:-6])
+
+                if time_stamp < 8:
+                    continue
+                elif time_stamp > 15:
+                    continue
+                else:
+                    #send row dict to stradegy class
+                    order = stradegy.logic(row_dict)
+                    #send row dict to graph class
+                    plot.pull_data_feed(row_dict, order)
+                    #send row dict to results class
+                    result.pull_data_feed(row_dict, order)
+            else:
+                #send row dict to stradegy class
+                order = stradegy.logic(row_dict)
+                #send row dict to graph class
+                plot.pull_data_feed(row_dict, order)
+                #send row dict to results class
+                result.pull_data_feed(row_dict, order)
+
             
         #pulling profit and loss list from results class
         p_and_l_list = result.get_p_and_l_list()
@@ -119,7 +140,7 @@ class Operate_Historical():
 #     - 6, daily frequency period
 #     - 7, weekly priving period
 
-test_1 = Operate_Historical(ticker="SPY", source="tda", period=5, start_date="2022-10-01", end_date="2022-12-01", show_plot=False, order_size=10)
+test_1 = Operate_Historical(ticker="SPY", source="tda", period=5, start_date="2022-10-01", end_date="2022-12-01", show_plot=False, order_size=10, after_hours = False)
 test_1.load_data()
 test_1.run_simulation()
 test_1.move_to_storage()

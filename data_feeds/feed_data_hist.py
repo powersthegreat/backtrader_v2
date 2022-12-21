@@ -7,6 +7,8 @@
 import sys
 sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\data_feeds\td_ameritrade')
 import get_data_tda_hist as tda_hist
+sys.path.append(r"C:\Users\Owner\Desktop\backtrader_v2\data_feeds\polygon")
+import get_data_polygon_hist as polygon_hist
 import csv
 import pandas   
 
@@ -38,14 +40,16 @@ class Feed_Historical_Pricing:
             #creating csv from td ameritrade data feed
             data_test = tda_hist.Historical_Pricing(self.ticker, self.period, self.start_date, self.end_date)
             csv_length = data_test.get_price_history()
-            self.csv_length = csv_length    
-        elif self.source == "yahoo":
-            #creating csv from yahoo finance data feed
-            pass
+            self.csv_length = csv_length 
+        elif self.source == "polygon":
+            #creating csv from polygon finance data feed
+            data_test = polygon_hist.Historical_Pricing(self.ticker, self.period, self.start_date, self.end_date)
+            self.historical_pricing_df = data_test.get_price_history()
+            self.csv_length = data_test.get_csv_length()
         else:
             #throwing error if source passed in is not one of options, these options should keep
             #expanding though as more official and credible data feed api's are added
-            raise InterruptedError("Invalid source, please choose from: 'tda', 'yahoo', or 'bloomberg'.")  
+            raise InterruptedError("Invalid source, please choose from: 'tda' or 'polygon'.")  
 
     def read_csv(self):
         #method reads from the created csv given the source member variable, all csvs are stored in
@@ -56,12 +60,12 @@ class Feed_Historical_Pricing:
         if self.source == "tda":
             #reading from tda csv and converting to dataframe
             self.historical_pricing_df = pandas.read_csv("data_feeds/td_ameritrade/data_csvs/tda_historical.csv")
-        elif self.source == "yahoo":
-            #reading from yahoo finance csv and converting to dataframe
+        elif self.source == "polygon":
+            #everythig done in create csv for polygon api
             pass
         else:
             #throwing error as second check for invalid source type
-            raise InterruptedError("Invalid source, please choose from: 'tda', 'yahoo', or 'bloomberg'.")
+            raise InterruptedError("Invalid source, please choose from: 'tda' or 'polygon'.")
 
     def get_increment_df(self, index):
         #method pulls a single line from the historical_pricing_df, converts it into
@@ -75,11 +79,12 @@ class Feed_Historical_Pricing:
             current_row_dict = eval(self.historical_pricing_df.loc[index][1])
             #returning/pushing data increment to operate class
             return current_row_dict
-        elif self.source == "yahoo":
-            pass
+        elif self.source == "polygon":
+            current_row_dict = self.historical_pricing_df[index]
+            return current_row_dict
         else:
             #throwing error as third check for invalid source type
-            raise InterruptedError("Invalid source, please choose from: 'tda', 'yahoo', or 'bloomberg'.")
+            raise InterruptedError("Invalid source, please choose from: 'tda' or 'polygon'.")
 
     def get_length(self):
         #returns length of csv

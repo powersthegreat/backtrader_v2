@@ -80,6 +80,23 @@ class Results:
             self.sim_records.append(temp_order)
             temp_order = []
 
+        # used for testing purposes only, creates much larger csv files
+        if order == "pass":
+            #adding to sim_records in list form [time_stamp, close_price, volume, order, p/l, change in p/l]
+            temp_order = []
+            temp_order.append(time_stamp)
+            temp_order.append(close_price)
+            temp_order.append(data["volume"])
+            temp_order.append(order)
+            temp_order.append(self.p_and_l)
+            if len(self.sim_records) > 0:
+                temp_order.append(self.p_and_l - (self.sim_records[-1][4]))
+            else:
+                temp_order.append(0)
+            self.sim_records.append(temp_order)
+            temp_order = []
+
+
 
     def write_results(self):
         feild_names = ["datetime", "close", "volume", "order", "P/L", "Change in P/L"]

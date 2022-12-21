@@ -18,7 +18,6 @@ class Historical_Pricing:
         self.start_date = start_date
         self.end_date = end_date
         self.period = period
-        self.csv_length = None
 
     def set_start_date(self, start_date):
         #method to set start date, pass in choosen start date in string of 
