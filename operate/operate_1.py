@@ -79,16 +79,24 @@ class Operate_Historical():
         result = results_1.Results(self.ticker, self.source, self.order_size, self.sim_name)
 
         for i in range(0, self.csv_length): #should be self.csv_length
+            # getting single row of data from data object
             row_dict = self.loaded_data_obj.get_increment_df(i)
 
+            # logic for skipping after hours market data
             if not self.after_hours:
                 time_short_1 = str(row_dict["datetime"])
                 time_short_2 = time_short_1[0:10]
-                time_stamp = int(str(datetime.fromtimestamp(int(time_short_2)))[-8:-6])
+                time_stamp_1 = int(str(datetime.fromtimestamp(int(time_short_2)))[-8:-6])
+                time_stamp_2 = int(str(datetime.fromtimestamp(int(time_short_2)))[-5:-3])
 
-                if time_stamp < 8:
+                # print(str(datetime.fromtimestamp(int(time_short_2))))
+
+                if time_stamp_2 == 30:
+                    time_stamp_1 += .5
+
+                if time_stamp_1 < 8.5:
                     continue
-                elif time_stamp > 15:
+                elif time_stamp_1 > 15:
                     continue
                 else:
                     #send row dict to stradegy class
@@ -123,24 +131,26 @@ class Operate_Historical():
         storage = storage_1.Storage()
         storage.move()
 
+# backtesting input parameters:
+# ticker == str == any U.S. stock or ETF, ex. 'SPY', 'TSLA'
+# source == str == 'polygon', 'tda' (td ameritrade), '30_test' (30 min data for entire 2022)
+# period == int == table for period types to pass in is as follows:
+#             - 1, minute frequency period
+#             - 2, five minute frequency period
+#             - 3, ten mintue frequency period
+#             - 4, fifteen minute freqiuency period
+#             - 5, thirty minute frequency period
+#             - 6, daily frequency period
+#             - 7, weekly priving period
+# start_date == str == any date within sources boundaries formatted as 'YEAR-MONTH-DAY', ex. '2022-10-01'
+# end_date == str == any date within sources boundaries formatted as 'YEAR-MONTH-DAY', can input 'None' to make end_date = current date
+# show_plot == bool == determines whether more detailed plot will show on screen as it is populated (slows down run time dramatically)
+# order_size == int == number of contracts being traded by stradegy, ex. '3'
+# after_hours == bool == determines whether after hours data will be used or not in stradegy
 
 
-
-# initialization input syntax:
-# - when initializing a Operate_Historical object pass in the ticker, data feed source,
-#   period type, an optional start and end date in form "YEAR-MONTH-DAY", and a optional
-#   'True' or 'False' if you want the plot to show on the screen. You have the option of 
-#   setting the start and end dates but if not they will be set to their max periods, the
-#   table for period types to pass in is as follows:
-#     - 1, minute frequency period
-#     - 2, five minute frequency period
-#     - 3, ten mintue frequency period
-#     - 4, fifteen minute freqiuency period
-#     - 5, thirty minute frequency period
-#     - 6, daily frequency period
-#     - 7, weekly priving period
-
-test_1 = Operate_Historical(ticker="SPY", source="tda", period=5, start_date="2022-10-01", end_date="2022-12-01", show_plot=False, order_size=10, after_hours = False)
+test_1 = Operate_Historical(ticker="SPY", source="30_test", period=5, start_date="2022-10-01", end_date="2022-12-01", show_plot=False, order_size=3 , after_hours=False)
 test_1.load_data()
 test_1.run_simulation()
+# moving to file system on pc
 test_1.move_to_storage()

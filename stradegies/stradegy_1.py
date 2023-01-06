@@ -1,21 +1,12 @@
-# larry connors rsi 2 stradegy, rules include...
-# 1. security must be above 200 day moving average to buy and below to sell
-# 2. 2-period rsi must be between 0 and 10 to buy or between 90 and 100 to sell
-# 3. recommended to buy and sell before the close rather than after
-# 4. exit long positions on a move above the 5-day sma and exit short positions
-#    on a move below the 5-day sma
-# 5. no stops are recommended (but possibly use % of portfolio loss as stop)
+# trys to reverse big losses by watching for previous quick period
+# volume increases
 
-# specifications
-# 1. 200-period sma
-# 2. 5-period sma
-# 3. 2-period rsi
-# 4. not that complicated
 
 import time
 import sys
 sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\stradegies\plotting')
 import plot_stradegy
+from datetime import datetime
 
 class Stradegy:
     def __init__(self, order_size, show_plot, sim_name):
@@ -41,10 +32,21 @@ class Stradegy:
         self.rsi_period = 2
         self.daily_gain_list = []
         self.daily_loss_list = []
-        self.prev_close = None
         self.avg_gain_list = []
         self.avg_loss_list = []
         self.current_rsi = None
+
+        self.rsi_period_2 = 10
+        self.daily_gain_list_2 = []
+        self.daily_loss_list_2 = []
+        self.avg_gain_list_2 = []
+        self.avg_loss_list_2 = []
+        self.current_rsi_2 = None
+
+
+        # prev variables
+        self.prev_close = None
+        self.prev_volume = None
    
     def move_sma_5(self, close):
         current_val = ((close) + sum(self.sma_5_queue)) / (self.sma_5_period)
@@ -115,20 +117,86 @@ class Stradegy:
             temp_gain_list = []
             temp_loss_list = []
 
-            numerator_1 = (self.avg_gain_list[-2])*(self.rsi_period-1)
-            numerator_2 = (numerator_1 + self.avg_gain_list[-1])/(self.rsi_period)
-            denomerator_1 = (self.avg_loss_list[-2])*(self.rsi_period-1)
-            denomerator_2 = (denomerator_1 + self.avg_loss_list[-1])/(self.rsi_period)
+            numerator_1 = (self.avg_gain_list[-2])*(self.rsi_period-1) + self.avg_gain_list[-1]
+            denomerator_1 = (self.avg_loss_list[-2])*(self.rsi_period-1) + self.avg_loss_list[-1]
             try:
-                current_val = round((numerator_2/denomerator_2), 4)
+                val_1 = round((numerator_1/denomerator_1), 4)
             except ZeroDivisionError:
-                current_val = 0
-            return current_val
+                val_1 = 0
+            current_rsi = 100 - (100 / (1 + val_1))
+            return current_rsi
+
+    def move_rsi_2(self, close):
+        daily_change = round((self.prev_close - close), 4)
+        if len(self.daily_gain_list_2) < self.rsi_period_2:
+            if daily_change > 0:
+                self.daily_gain_list_2.append(daily_change)
+                self.daily_loss_list_2.append(0)
+            elif daily_change < 0:
+                self.daily_loss_list_2.append(daily_change*(-1))
+                self.daily_gain_list_2.append(0)
+            else:
+                self.daily_gain_list_2.append(0)
+                self.daily_loss_list_2.append(0)
+            self.avg_gain_list_2.append(0)
+            self.avg_loss_list_2.append(0)
+            return 0
+
+        elif self.avg_gain_list_2[-1] == 0 and self.avg_loss_list_2[-1] == 0:
+            if daily_change > 0:
+                self.daily_gain_list_2.append(daily_change)
+                self.daily_loss_list_2.append(0)
+            elif daily_change < 0:
+                self.daily_loss_list_2.append(daily_change*(-1))
+                self.daily_gain_list_2.append(0)
+            else:
+                self.daily_gain_list_2.append(0)
+                self.daily_loss_list_2.append(0)
+
+            temp_gain_list = self.daily_gain_list_2[(-1)-(self.rsi_period_2):(-1)]
+            temp_loss_list = self.daily_loss_list_2[(-1)-(self.rsi_period_2):(-1)]
+            avg_gain_val = round(sum(temp_gain_list)/len(temp_gain_list), 4)
+            avg_loss_val = round(sum(temp_loss_list)/len(temp_loss_list), 4)
+            self.avg_gain_list_2.append(avg_gain_val)
+            self.avg_loss_list_2.append(avg_loss_val)
+            temp_gain_list = []
+            temp_loss_list = []
+            return 0
+
+        else:
+            if daily_change > 0:
+                self.daily_gain_list_2.append(daily_change)
+                self.daily_loss_list_2.append(0)
+            elif daily_change < 0:
+                self.daily_loss_list_2.append(daily_change*(-1))
+                self.daily_gain_list_2.append(0)
+            else:
+                self.daily_gain_list_2.append(0)
+                self.daily_loss_list_2.append(0)
+
+            temp_gain_list = self.daily_gain_list_2[(-1)-(self.rsi_period_2):(-1)]
+            temp_loss_list = self.daily_loss_list_2[(-1)-(self.rsi_period_2):(-1)]
+            avg_gain_val = round(sum(temp_gain_list)/len(temp_gain_list), 4)
+            avg_loss_val = round(sum(temp_loss_list)/len(temp_loss_list), 4)
+            self.avg_gain_list_2.append(avg_gain_val)
+            self.avg_loss_list_2.append(avg_loss_val)
+            temp_gain_list = []
+            temp_loss_list = []
+
+            numerator_1 = (self.avg_gain_list_2[-2])*(self.rsi_period_2-1) + self.avg_gain_list_2[-1]
+            denomerator_1 = (self.avg_loss_list_2[-2])*(self.rsi_period_2-1) + self.avg_loss_list_2[-1]
+            try:
+                val_1 = round((numerator_1/denomerator_1), 4)
+            except ZeroDivisionError:
+                val_1 = 0
+            current_rsi = 100 - (100 / (1 + val_1))
+            return current_rsi
 
 
     def logic(self, data):
         # getting close from data feed and sending to plotting class
         close = float(data["close"])
+        volume = float(data["volume"])
         self.test_plot.append_close(close)
         self.counter += 1
         # print(self.counter)
@@ -138,7 +206,7 @@ class Stradegy:
             self.sma_200_queue.append(close)
             self.test_plot.append_indicator_1(close)
             self.test_plot.append_indicator_2(close)
-            self.test_plot.append_indicator_3(close)
+            # self.test_plot.append_indicator_3(close)
 
             if len(self.sma_5_queue) < (self.sma_5_period-1):
                 self.sma_5_queue.append(close)
@@ -152,15 +220,31 @@ class Stradegy:
                 self.avg_gain_list.append(0)
             else:
                 self.current_rsi = self.move_rsi(close)
+            
+            if len(self.daily_gain_list_2) == 0:
+                self.daily_gain_list_2.append(0)
+                self.daily_loss_list_2.append(0)
+                self.avg_gain_list_2.append(0)
+                self.avg_gain_list_2.append(0)
+            else:
+                self.current_rsi_2 = self.move_rsi_2(close)
+
             self.prev_close = close
+            self.prev_volume = volume
             return "pass"
-       
+        try: 
+            volume_percent_change = ((self.prev_volume - volume) / self.prev_volume) * 100
+        except ZeroDivisionError:
+            volume_percent_change = 0
+        if volume_percent_change < 0:
+            volume_percent_change = volume_percent_change * -1
         self.current_200_sma = self.move_sma_200(close)
         self.current_5_sma = self.move_sma_5(close)
         self.current_rsi = self.move_rsi(close)
+        self.current_rsi_2 = self.move_rsi_2(close)
         self.test_plot.append_indicator_1(self.current_200_sma)
         self.test_plot.append_indicator_2(self.current_5_sma)
-        self.test_plot.append_indicator_3(self.current_rsi)
+        # self.test_plot.append_indicator_3(self.current_rsi)
         # print(f"Current Close: {close}")
         # print(f"Current 200 SMA: {self.current_200_sma}")
         # print(f"Current 5 SMA: {self.current_5_sma}")
@@ -169,17 +253,43 @@ class Stradegy:
         # print(f"Position: {self.position}")
         # print("\n")
 
+        # time_short_1 = str(data["datetime"])
+        # time_short_2 = time_short_1[0:10]
+        # current_time = str(datetime.fromtimestamp(int(time_short_2)))
+        # if current_time == "2022-07-14 10:00:00" or current_time == "2022-06-28 09:00:00":
+        #     print(current_time)
+        #     print(f"Current Close: {close}")
+        #     print(f"Previous Close: {self.prev_close}")
+        #     print(f"Current Volume: {volume}")
+        #     print(f"Prev Volume: {self.prev_volume}")
+        #     print(f"Current RSI 2: {self.current_rsi}")
+        #     print(f"Current RSI 10: {self.current_rsi_2}")
+        #     print("\n")
+
         # should probably put delay to let indicators get into zone
         # before running trade signals
         if self.counter <= 225:
             return "pass"
-
+            
         # starting stradegy
         if self.stradegy_started == False:
             # if trend is bullish
             if self.current_200_sma < close:
                 # if rsi in range 0-10
-                if self.current_rsi < 10: # and self.current_rsi >= 0:
+                if self.current_rsi < 5 and volume_percent_change > 40:
+                    # open a short position
+                    self.stradegy_started = True
+                    self.position = False
+                    # print(f"SELL TO OPEN\n")
+                    return "sell"
+                if self.current_rsi < 10 and (abs(self.current_rsi - self.current_rsi_2) > 60):
+                    #  # open a short position
+                    # self.stradegy_started = True
+                    # self.position = False
+                    # # print(f"SELL TO OPEN\n")
+                    # return "sell"
+                    return "pass"
+                if self.current_rsi < 5: # and self.current_rsi >= 0:
                     # open long position
                     self.stradegy_started = True
                     self.position = True
@@ -188,7 +298,20 @@ class Stradegy:
             # elif trend is bearish
             elif self.current_200_sma > close:
                 # if rsi is in range 90-100
-                if self.current_rsi > 90: # and self.current_rsi <= 100:
+                if self.current_rsi > 95 and volume_percent_change > 40:
+                    # open a long position
+                    self.stradegy_started = True
+                    self.position = True
+                    # print(f"BUY TO OPEN\n")
+                    return "buy"
+                if self.current_rsi > 90 and (abs(self.current_rsi - self.current_rsi) > 60):
+                    # # open a long position
+                    # self.stradegy_started = True
+                    # self.position = True
+                    # # print(f"BUY TO OPEN\n")
+                    # return "buy"
+                    return "pass"
+                if self.current_rsi > 95: # and self.current_rsi <= 100:
                     # open a short position
                     self.stradegy_started = True
                     self.position = False
@@ -228,6 +351,7 @@ class Stradegy:
             pass
 
         self.prev_close = close
+        self.prev_volume = volume
         return "pass"
 
 

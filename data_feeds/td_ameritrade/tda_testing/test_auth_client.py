@@ -1,6 +1,8 @@
 import sys
+
 sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\data_feeds\td_ameritrade\authentication')
 import oauth
+
 import datetime
 import pandas
 

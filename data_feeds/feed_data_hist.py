@@ -9,7 +9,7 @@ sys.path.append(r'C:\Users\Owner\Desktop\backtrader_v2\data_feeds\td_ameritrade'
 import get_data_tda_hist as tda_hist
 sys.path.append(r"C:\Users\Owner\Desktop\backtrader_v2\data_feeds\polygon")
 import get_data_polygon_hist as polygon_hist
-import csv
+from csv import DictReader
 import pandas   
 
 
@@ -46,6 +46,11 @@ class Feed_Historical_Pricing:
             data_test = polygon_hist.Historical_Pricing(self.ticker, self.period, self.start_date, self.end_date)
             self.historical_pricing_df = data_test.get_price_history()
             self.csv_length = data_test.get_csv_length()
+        elif self.source == "30_test":
+            with open("data_feeds/polygon/data_csvs/30_test.csv", "r") as csv:
+                dict_reader = DictReader(csv)
+                self.historical_pricing_df = list(dict_reader)
+                self.csv_length = len(self.historical_pricing_df)
         else:
             #throwing error if source passed in is not one of options, these options should keep
             #expanding though as more official and credible data feed api's are added
@@ -62,6 +67,8 @@ class Feed_Historical_Pricing:
             self.historical_pricing_df = pandas.read_csv("data_feeds/td_ameritrade/data_csvs/tda_historical.csv")
         elif self.source == "polygon":
             #everythig done in create csv for polygon api
+            pass
+        elif self.source == "30_test":
             pass
         else:
             #throwing error as second check for invalid source type
@@ -81,6 +88,15 @@ class Feed_Historical_Pricing:
             return current_row_dict
         elif self.source == "polygon":
             current_row_dict = self.historical_pricing_df[index]
+            return current_row_dict
+        elif self.source == "30_test":
+            current_row_dict = self.historical_pricing_df[index]
+            current_row_dict['open'] = float(current_row_dict.pop("open"))
+            current_row_dict['high'] = float(current_row_dict.pop("high"))
+            current_row_dict['low'] = float(current_row_dict.pop("low"))
+            current_row_dict['close'] = float(current_row_dict.pop("close"))
+            current_row_dict['volume'] = float(current_row_dict.pop("volume"))
+            current_row_dict['datetime'] = int(current_row_dict.pop("datetime"))
             return current_row_dict
         else:
             #throwing error as third check for invalid source type

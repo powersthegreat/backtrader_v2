@@ -1,5 +1,4 @@
 # pulls historical pricing data from polygon.io api
-
 from polygon.authentication import config
 import datetime
 from datetime import timedelta
